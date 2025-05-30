@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: ayush               # Your chosen service name
+    env: python
+    region: oregon            # Closest available region (no India region yet)
+    plan: free
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput"
+    startCommand: "gunicorn ecomm.wsgi"
+
+databases:
+  - name: ayush-db           # Database name on Render
+    engine: postgresql
+    plan: free
