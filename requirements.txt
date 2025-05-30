@@ -32,7 +32,7 @@ microsofttranslator==0.8
 oauth2client==2.2.0
 odfpy==1.3.6
 openpyxl==2.5.3
-Pillow==9.3.0
+Pillow==9.2.0
 polib==1.1.0
 psycopg2==2.7.3.2
 pyasn1==0.4.2
@@ -48,7 +48,6 @@ rsa==4.7
 sendgrid==5.3.0
 six==1.11.0
 sorl-thumbnail==12.4.1
-South==1.0.2
 surlex==0.2.0
 tablib==0.14.0
 unicodecsv==0.14.1
@@ -59,3 +58,6 @@ WebOb==1.8.1
 WebTest==2.0.29
 xlrd==1.1.0
 xlwt==1.3.0
+dj-database-url
+whitenoise
+gunicorn
