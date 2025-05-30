@@ -7,7 +7,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-secret-key")
 DEBUG = os.environ.get("DJANGO_DEBUG", "True") != "False"
-ALLOWED_HOSTS = [os.environ.get("DJANGO_ALLOWED_HOST", "*")]
+
+allowed_hosts_env = os.environ.get("DJANGO_ALLOWED_HOST", "*")
+ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(",")]
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    X_FRAME_OPTIONS = 'DENY'
 
 # APPLICATIONS
 INSTALLED_APPS = [
@@ -36,8 +47,8 @@ INSTALLED_APPS = [
     'about',
     'contact',
     'faq',
-    'privacy-policy',
-    'refund-policy',
+    'privacy_policy',
+    'refund_policy',
     'onlineshop',
     'cart',
     'orders',
@@ -78,11 +89,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'eshopper.wsgi.application'
 
-# DATABASE
+# DATABASE - read from DATABASE_URL env var provided by Render
 DATABASES = {
-    'default': dj_database_url.config(
-        default='postgres://postgres:admin@localhost:5432/eshopper'
-    )
+    'default': dj_database_url.config(default='postgres://localhost')
 }
 
 # PASSWORD VALIDATION
@@ -93,7 +102,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# I18N
+# INTERNATIONALIZATION
 LANGUAGE_CODE = 'en'
 TIME_ZONE = 'Africa/Accra'
 USE_I18N = True
@@ -138,10 +147,21 @@ CART_SESSION_ID = 'cart'
 PAYPAL_RECEIVER_EMAIL = os.environ.get("PAYPAL_RECEIVER_EMAIL", "")
 PAYPAL_TEST = True
 
-# REDIS
-REDIS_HOST = 'localhost'
-REDIS_PORT = 6379
-REDIS_DB = 1
+# REDIS - get from REDIS_URL env var from Render
+REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/1")
+
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': REDIS_URL,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
 
 # PARLER
 PARLER_LANGUAGES = {
@@ -178,3 +198,23 @@ NEWSLETTER_EMAIL_DELAY = 0.1
 NEWSLETTER_BATCH_DELAY = 60
 NEWSLETTER_BATCH_SIZE = 100
 NEWSLETTER_RICHTEXT_WIDGET = "tinymce.widgets.TinyMCE"
+
+# LOGGING
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'logs/django.log'),
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
+    },
+}
