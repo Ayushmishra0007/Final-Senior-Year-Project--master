@@ -9,7 +9,7 @@ Django==2.2.28
 django-crispy-forms==1.7.2
 django-decouple==2.1
 django-extensions==2.0.7
--e git+https://github.com/django-import-export/django-import-export.git@657b7d72b36e61c3e2eaedd0ec8695bab638cf84#egg=django_import_export
+django-import-export==3.3.6
 django-jet==1.0.7
 django-newsletter==0.6
 django-parler==1.5.1
