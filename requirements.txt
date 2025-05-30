@@ -50,7 +50,7 @@ six==1.11.0
 sorl-thumbnail==12.4.1
 South==1.0.2
 surlex==0.2.0
-tablib==0.12.1
+tablib==0.14.0
 unicodecsv==0.14.1
 uritemplate==3.0.0
 urllib3==1.26.5
